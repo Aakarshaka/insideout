@@ -97,6 +97,24 @@
       font-size: 0.9em;
       color: #ccc;
     }
+
+    #logs {
+      margin-top: 30px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    #logs h3 {
+      margin-bottom: 10px;
+    }
+
+    .log-entry {
+      border: 1px solid #ffffff22;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      background-color: #ffffff10;
+    }
   </style>
 </head>
 <body>
@@ -115,6 +133,9 @@
   <div class="output" id="output">
     <p>Pilih karakter di atas untuk melihat pesan motivasi dan curhat.</p>
   </div>
+
+  <button onclick="showLogs()">Lihat Riwayat Curhatan</button>
+  <div id="logs"></div>
 
   <script>
     const messages = {
@@ -170,6 +191,30 @@
       };
       localStorage.setItem('feeling-log-' + Date.now(), JSON.stringify(log));
       document.getElementById('saved-msg').innerText = 'Curhatanmu sudah disimpan secara lokal.';
+    }
+
+    function showLogs() {
+      const logsDiv = document.getElementById('logs');
+      logsDiv.innerHTML = '<h3>Riwayat Curhatan:</h3>';
+      const keys = Object.keys(localStorage).filter(key => key.startsWith('feeling-log-'));
+
+      if (keys.length === 0) {
+        logsDiv.innerHTML += '<p>Belum ada curhatan tersimpan.</p>';
+        return;
+      }
+
+      keys.sort().reverse();
+
+      keys.forEach(key => {
+        const log = JSON.parse(localStorage.getItem(key));
+        logsDiv.innerHTML += `
+          <div class="log-entry">
+            <strong>${log.date}</strong><br/>
+            <em>${log.emotion}</em> (Intensitas: ${log.intensity}%)<br/>
+            <p>${log.text}</p>
+          </div>
+        `;
+      });
     }
   </script>
 </body>
