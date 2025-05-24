@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Siapa yang Mengendalikan Hatimu?</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #1a1a1a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      transition: background-color 0.5s;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .characters {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .character {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.3s;
+    }
+
+    .character:hover {
+      transform: scale(1.1);
+    }
+
+    .joy { background-color: #FFD93D; }
+    .sadness { background-color: #3C91E6; }
+    .anger { background-color: #F44336; }
+    .disgust { background-color: #4CAF50; }
+    .anxiety { background-color: #FF914D; }
+    .ennui { background-color: #7D6AA3; }
+
+    .output {
+      margin-top: 30px;
+      text-align: center;
+      max-width: 500px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      font-family: 'Poppins', sans-serif;
+      padding: 10px;
+      resize: none;
+      border: none;
+      border-radius: 8px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      font-weight: bold;
+      background-color: #ffffff20;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ffffff40;
+    }
+
+    .slider-container {
+      margin-top: 10px;
+    }
+
+    input[type=range] {
+      width: 100%;
+    }
+
+    #saved-msg {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Siapa yang Mengendalikan Hatimu?</h1>
+  <p>Pilih karakter yang sesuai dengan perasaanmu hari ini.</p>
+
+  <div class="characters">
+    <div class="character joy" onclick="selectEmotion('Joy')">Joy</div>
+    <div class="character sadness" onclick="selectEmotion('Sadness')">Sad</div>
+    <div class="character anger" onclick="selectEmotion('Anger')">Anger</div>
+    <div class="character disgust" onclick="selectEmotion('Disgust')">Disgust</div>
+    <div class="character anxiety" onclick="selectEmotion('Anxiety')">Anxiety</div>
+    <div class="character ennui" onclick="selectEmotion('Ennui')">Ennui</div>
+  </div>
+
+  <div class="output" id="output">
+    <p>Pilih karakter di atas untuk melihat pesan motivasi dan curhat.</p>
+  </div>
+
+  <script>
+    const messages = {
+      Joy: {
+        text: "Kebahagiaan kecil adalah kekuatan besar. Nikmati momen ini!",
+        color: "#FFD93D"
+      },
+      Sadness: {
+        text: "Tidak apa-apa merasa sedih. Itu tanda bahwa kamu punya hati yang dalam.",
+        color: "#3C91E6"
+      },
+      Anger: {
+        text: "Marah itu manusiawi. Yang penting adalah bagaimana kamu menyalurkannya.",
+        color: "#F44336"
+      },
+      Disgust: {
+        text: "Intuisi dan rasa jijik kadang menyelamatkanmu dari hal yang salah.",
+        color: "#4CAF50"
+      },
+      Anxiety: {
+        text: "Kecemasan hanyalah suara hati yang ingin kamu waspada. Kamu tetap mampu.",
+        color: "#FF914D"
+      },
+      Ennui: {
+        text: "Rasa bosan adalah undangan untuk bereksplorasi lebih jauh ke dalam diri.",
+        color: "#7D6AA3"
+      }
+    };
+
+    function selectEmotion(emotion) {
+      const { text, color } = messages[emotion];
+      document.body.style.backgroundColor = color;
+      document.getElementById('output').innerHTML = `
+        <p><strong>${emotion}</strong>: ${text}</p>
+        <textarea id="curhat" placeholder="Curhatin perasaanmu di sini..."></textarea>
+        <div class="slider-container">
+          Intensitas perasaan: <span id="rangeVal">50%</span>
+          <input type="range" id="intensity" min="0" max="100" value="50" oninput="document.getElementById('rangeVal').innerText = this.value + '%'">
+        </div>
+        <button onclick="saveFeeling('${emotion}')">Simpan Curhatan</button>
+        <div id="saved-msg"></div>
+      `;
+    }
+
+    function saveFeeling(emotion) {
+      const text = document.getElementById('curhat').value;
+      const intensity = document.getElementById('intensity').value;
+      const log = {
+        emotion,
+        text,
+        intensity,
+        date: new Date().toLocaleString()
+      };
+      localStorage.setItem('feeling-log-' + Date.now(), JSON.stringify(log));
+      document.getElementById('saved-msg').innerText = 'Curhatanmu sudah disimpan secara lokal.';
+    }
+  </script>
+</body>
+</html>
